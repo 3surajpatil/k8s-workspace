@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jcore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jcore
+  template:
+    metadata:
+      labels:
+        app: jcore
+    spec:
+      containers:
+      - name: jcore
+        image: billing-backend:latest
+        #if mentioned latest DockerDesktop will try to connect to Dockerhub, so below pull policy is required.
+        imagePullPolicy: IfNotPresent
+        #resources:
+        #  requests:
+        #    memory: "50Mi"
+        #    cpu: "250m"
+        #  limits:
+        #    memory: "100Mi"
+        #    cpu: "500m"
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          value: "host.docker.internal"
+        - name: DB_USERNAME 
+          value: "user"
+        - name: DB_PASSWORD
+          value: "P@ssW0rd"
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jcore-service
+spec:
+  selector:
+    app: jcore
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 31001
+  type: NodePort

@@ -1,0 +1,309 @@
+References
+------------------------------------------------------------------------------------------------------------------------------------
+
+https://github.com/kodekloudhub/example-voting-app-kubernetes
+
+https://kubernetes.io/docs/tasks/tools/install-minikube/
+#https://www.virtualbox.org/wiki/Downloads   (looks like not mandatory. minikube works fine)
+MiniKube Download page for  Windows: https://github.com/kubernetes/minikube/releases
+
+
+#Install and set up the kubectl tool: -
+https://kubernetes.io/docs/tasks/tools/
+
+#you can enable kubernates from docker desktop settings. that is easy.
+#Install Minikube: - 
+https://minikube.sigs.k8s.io/docs/start/
+
+
+#Minikube Tutorial: -
+https://kubernetes.io/docs/tutorials/hello-minikube/
+
+If the minikube installation has been done on the linux, then to access the URL on the local browser, we need to do a few steps to get the service URL to work. 
+Those steps are covered on this documentation page: -
+
+https://minikube.sigs.k8s.io/docs/handbook/accessing/#using-minikube-service-with-tunnel
+
+
+
+
+
+#Install VirtualBox: -
+https://www.virtualbox.org/wiki/Downloads
+https://www.virtualbox.org/wiki/Linux_Downloads
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+# kubernates installation.
+minikube  # below apps are alternatives of minikube.
+#kubeadam
+#Microk8s
+
+
+
+
+-------------------------------------------------------- minikube commands ----------------------------------------------------------------------------
+
+#start minikube
+#minikube start 
+#minikube start --cpus 6 --memory 20g --disk-size=50g
+minikube start --vm-driver=virtualbox  #other optoins := virtualbox, ssh , docker driver
+
+********************************************************************************************************************
+-----> using kubernates services from docker desktop. from settings need to enable kubernetes
+
+
+#on windows 
+Minikube start
+Minikube start --vm-driver=--driver=hyperv  #other optoins := virtualbox, ssh , docker driver
+
+
+
+#Pause Kubernetes without impacting deployed applications:
+minikube pause
+
+#Unpause a paused instance:
+minikube unpause
+
+#Halt the cluster:
+minikube stop
+
+#Change the default memory limit (requires a restart):
+minikube config set memory 9001
+
+#Browse the catalog of easily installed Kubernetes services:
+minikube addons list
+
+#Create a second cluster running an older Kubernetes release:
+minikube start -p aged --kubernetes-version=v1.16.1
+
+#Delete all of the minikube clusters:
+minikube delete --all
+
+
+
+
+---------------------------------------------------------------------------------- general ----------------------------------------------------------------------
+
+#To know what fields are available in Kubernetes YAML files, you should use the official Kubernetes API reference. It lists every resource (like Pod, Deployment, Service) and their configurable fields. You can also explore fields interactively with
+
+
+
+kubectl explain pods
+ 
+ 
+
+kubectl run nginx --image=nginx
+
+kubectl delete pod nginx
+
+kubectl apply -f pod-def.yaml
+kubectl create -f pod-def.yaml
+kubectl describe pod myapp-pod
+kubectl delete pod webapp
+kubectl run redis --image=redis123 --dry-run -o yaml
+
+
+kubectl get rs
+kubectl delete rs replicaset-1
+kubectl replace -f replicaset-definitina.yml
+kubectl scale -replicas=6 -f replicaset-definition.yaml
+kubectl edit rs new-replica-set   # opens deployment yaml
+kubectl describe replicaset myapp-replicaset
+
+kubectl scale replicaset mysaqpp-rs --replicas=2
+kubectl edit replicaset myapp-repplica-set
+
+
+Deployments
+===============
+
+--> deployments create replicasets. 
+
+kubectl create deployment --help
+
+
+kubectl get replicaset
+kubectl get pods
+
+kubectl get all
+
+kubectl create deployment httpd-frontend --image=httpd:2.4-alpine --replicas=3
+
+
+
+
+# use create for first time deployments, although create and apply are same.
+kubectll create -f deployment-def.yaml
+
+#to get deploy ments
+kubectl get deployments    
+
+#to get deployment details
+kubectl describe deployment frontend      # or kubectl describe deployment/frontend
+
+# edit deployment 
+# just saving deployment file will deploy new changes.
+kubectl edit deployment frontend			# kubectl edit deployment/frontend   
+
+# to update deployemnt
+kubectl apply -f deployment-def.yaml
+or
+kubectl set image deployment/myapp-definition.yaml container-name=image-name:version
+kubectl set image deployment/myapp-definition.yaml nginx=nginx:1.9.1
+
+# status
+kubectl rollout status deployment/myapp-deployment
+kubectl rollout history deployment/myapp-deployment
+
+#rollback
+kubectl rollout undo deployment/myapp-deployment
+
+
+# edit deployment
+
+kubectl edit deployment myapp-deployment --record=true
+
+
+
+
+
+Service
+===============
+
+kubectl create -f service-definition.yaml
+kubectl apply -f service-def.yaml
+kubectl get service servicename-service -n namespace
+kubectl get services -n namespace
+
+minikube service myapp-service --url
+
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.MINIKUBE commands <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<,
+
+>minikube start 
+
+Basic Commands:
+  start            Starts a local Kubernetes cluster
+  status           Gets the status of a local Kubernetes cluster
+  stop             Stops a running local Kubernetes cluster
+  delete           Deletes a local Kubernetes cluster
+  dashboard        Access the Kubernetes dashboard running within the minikube cluster
+  pause            pause Kubernetes
+  unpause          unpause Kubernetes
+
+
+
+minikube start 
+kubectl get namespaces
+kubectl create namespace devns
+kubectl describe namespace devns
+
+kubectl get pods --all-namespaces -o wide
+kubectl get nodes -o wide
+minikube stop
+
+minikube dashboard
+
+
+
+
+
+==============================================Kubernates Monitoring Commands =============================================
+
+
+kubectl top pod: Displays the memory usage of a pod. 
+kubectl top pod --containers: Displays the CPU and memory usage for each container in a pod. 
+kubectl get resourcequota mem-cpu-demo: Shows the quota and how much of it has been used. 
+kubectl exec -it podname -- sh: Enters an interactive session to print the current memory usage. 
+cat /sys/fs/cgroup/memory/memory.usage_in_bytes: Prints the current memory usage. 
+
+
+
+---------------------------- Creating pod for SpringBootDemo application ---------------------------------------------------------------------------------------------------
+# in a new terminal 
+minikube start
+
+cd /home/suraj/workload/eclipse-workspaces/STStestworkspace/Spring-Boot-Demo/
+
+docker build -t springbootdemo:latest .
+
+#load your image to minikube.
+minikube image load springbootdemo:latest
+minikube image ls
+
+docker run -itd  --network host springbootdemo
+
+# alternative to above.
+#docker run -itd -p 8080:8080 springbootdemo
+
+docker logs 0dcc5b04f772
+
+https://kubernetes.io/docs/concepts/workloads/pods/
+
+
+Pods 
+------
+
+---> A Pod is similar to a set of containers with shared namespaces and shared filesystem volumes.
+---> Restarting a container in a Pod should not be confused with restarting a Pod. A Pod is not a process, but an environment for running container(s). A Pod persists until it is deleted.
+
+
+kubectl apply -f pod.yaml -n devns
+
+#on minikube dashboard, first time you will get error while pulling image.
+
+# if some issue comes while creating pod, delete pod changed whatever required in pod.yaml and then re-create pod by kubectl apply ...
+
+kubectl get pods -n devns -o wide
+kubectl delete pod sbdjar -n devns
+
+
+
+
+
+
+
+
+Basic/Beginner Level:
+Q) What is Kubernetes and why is it used?
+Q) Explain the core components of a Kubernetes cluster (Master Node, Worker Nodes, Kube-APIServer, Kube-Scheduler, Kube-Controller-Manager, etcd, Kubelet, Kube-proxy).
+Q) What is a Pod in Kubernetes? What is its relationship with containers?
+Q) What is a Deployment and how does it manage Pods?
+Q) What are Services in Kubernetes and what types are there (ClusterIP, NodePort, LoadBalancer)?
+Q) Explain the concept of Namespaces.
+Q) What is kubectl and what are some common commands?
+Q) How does Kubernetes handle scaling (e.g., Horizontal Pod Autoscaling)?
+
+Intermediate Level:
+Q) Explain the role of etcd in a Kubernetes cluster.
+Q) What is Ingress and how does it differ from a Service?
+Q) Describe how Kubernetes handles networking between Pods.
+Q) What are ConfigMaps and Secrets, and how are they used for managing application configuration and sensitive data?
+Q) Explain the difference between a Deployment, StatefulSet, and DaemonSet. When would you use each?
+Q) What are Labels and Selectors, and how are they used in Kubernetes?
+Q) How do you perform rolling updates and rollbacks in Kubernetes?
+Q) What are Persistent Volumes and Persistent Volume Claims?
+Q) Explain init containers and their use cases.
+Q) How does Kubernetes ensure high availability and self-healing?
+
+Advanced/Experienced Level:
+Q) Discuss Kubernetes networking models and CNI plugins (e.g., Calico, Flannel).
+Q) Explain Kubernetes security best practices, including RBAC, Network Policies, and Pod Security Standards.
+Q) How do you troubleshoot common issues in a Kubernetes cluster (e.g., Pods in Pending state, network connectivity issues)?
+Q) Discuss strategies for managing and scaling large-scale Kubernetes clusters in production.
+Q) Explain the concept of Custom Resource Definitions (CRDs) and Custom Controllers.
+Q) How do you monitor and log applications and the cluster itself in Kubernetes (e.g., Prometheus, Grafana, ELK stack)?
+Q) Discuss the role of Helm charts in packaging and deploying applications on Kubernetes.
+Q) What is GitOps and how can it be implemented with Kubernetes?
+Q) Explain the differences and use cases for various storage solutions in Kubernetes (e.g., local storage, cloud-provider specific storage, NFS).
+Q) How would you optimize resource utilization and cost in a Kubernetes environment? 
+    
