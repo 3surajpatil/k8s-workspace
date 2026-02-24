@@ -38,10 +38,16 @@ metadata:
   name: jcore-service
   namespace: billingns
 spec:
-  selector:
-    app: jcore
-  ports:
-  - port: 8080
-    targetPort: 8080
-    nodePort: 31001
-  type: NodePort
+ # selector:
+ #   app: jcore
+ # ports:
+ # - port: 8080
+ #   targetPort: 8080
+ #   nodePort: 31002
+ # type: NodePort
+ selector:
+   app: jcore
+ ports:
+ - port: 7002
+   targetPort: 8080
+ type: ClusterIP

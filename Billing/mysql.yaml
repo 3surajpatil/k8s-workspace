@@ -40,10 +40,16 @@ metadata:
   name: mysql
   namespace: billingns
 spec:
-  type: NodePort
-  selector: # Uncommented to ensure routing works
-    app: mysql
-  ports:
-  - port: 3306 
-    targetPort: 3306 # Matches containerPort
-    nodePort: 31002 # Fixed capitalization from NodePort to nodePort
+ #type: NodePort
+ #selector: # Uncommented to ensure routing works
+ #   app: mysql
+ #ports:
+ # - port: 3306 
+ #   targetPort: 3306 # Matches containerPort
+ #   nodePort: 31009 # Fixed capitalization from NodePort to nodePort
+ type: ClusterIP
+ selector:
+   app: mysql
+ ports:
+ - port: 3306
+      
